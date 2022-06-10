@@ -46,8 +46,8 @@ boolean jump;
 boolean dblJumpAvail = true;
 float spaceClickedTimer;
 
-int[] xList = new int[1080/20];
-int[] yList = new int[720/20];
+int[] xList = new int[1600/20];
+int[] yList = new int[900/20];
 
 Player player1 = new Player();
 Enemy enemy1;
@@ -86,9 +86,9 @@ Goal goal1;
  public void setup(){
   /* size commented out by preprocessor */; 
   
-  speedX = 8;
+  speedX = 6;
   speedY = 0;
-  gravity = 0.5f;
+  gravity = 1.5f;
   
   rectMode(CENTER);
   textAlign(CENTER,CENTER);
@@ -198,7 +198,7 @@ Goal goal1;
     explosions[i].display(); 
   }
 
-  playerAcc = playerAcc + 0.4f;
+  // PLAYERS VERTICAL COLLISION
   for(int i = 0; i < objs.length; i++){
     if(playerX+player1.w/2 > objs[i].left && playerX-player1.w/2 < objs[i].right && 
     playerY+player1.h/2 + speedY > objs[i].top && playerY+player1.h/2 <= objs[i].bottom){
@@ -213,6 +213,25 @@ Goal goal1;
     playerY = objs[sIndex].top - player1.h/2; 
     grounded = true;
     dblJumpAvail = true;
+    //playerAcc = 0;
+    sLoopFail = -1;
+  }
+
+  for(int i = 0; i < objs.length; i++){
+    if(playerX+player1.w/2 > objs[i].left && playerX-player1.w/2 < objs[i].right && 
+    playerY+player1.h/2 > objs[i].top && playerY-player1.h/2 + speedY <= objs[i].bottom){
+      sIndex = i;
+      sLoopFail = sIndex;
+    }
+  }
+  if(sLoopFail == -1){
+    //playerY += speedY; 
+    //speedY += gravity;
+  }else{
+    playerY = objs[sIndex].bottom + player1.h/2; 
+    speedY *= -0.8f;
+    //grounded = true;
+    //dblJumpAvail = true;
     //playerAcc = 0;
     sLoopFail = -1;
   }
@@ -232,7 +251,8 @@ Goal goal1;
     quad(savedX,savedY,mouseX,savedY,mouseX,mouseY,savedX,mouseY);
     rectMode(CENTER);
   }  
-  
+
+  /*
   if(wDown || !grounded){
     for(int i = 0; i < objs.length; i++){
       if(playerY-player1.h/2 + speedY < objs[i].bottom && playerY-player1.h/2 >= objs[i].bottom && 
@@ -248,6 +268,7 @@ Goal goal1;
       wLoopFail = -1;
     }
   }
+  */
   
   if(aDown){
     for(int i = 0; i < objs.length; i++){
@@ -265,6 +286,7 @@ Goal goal1;
     }
   }
   
+  /*
   if(sDown && !grounded){
     for(int i = 0; i < objs.length; i++){
       if(playerX+player1.w/2 > objs[i].left && playerX-player1.w/2 < objs[i].right && 
@@ -280,6 +302,7 @@ Goal goal1;
       sLoopFail = -1;
     }
   }
+  */
   
   if(dDown){
     //Loop through all objects in objs
@@ -320,9 +343,8 @@ Goal goal1;
   }
   
   if(jump){
-    println("JUMP");
     playerY = playerY - 5;
-    speedY = -10; 
+    speedY = -20; 
     jump = false;
   }
     
@@ -853,7 +875,7 @@ class Popup{
 }
 
 
-  public void settings() { size(1080, 720); }
+  public void settings() { size(1600, 900); }
 
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "platformer" };

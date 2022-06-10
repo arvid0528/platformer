@@ -29,8 +29,8 @@ boolean jump;
 boolean dblJumpAvail = true;
 float spaceClickedTimer;
 
-int[] xList = new int[1080/20];
-int[] yList = new int[720/20];
+int[] xList = new int[1600/20];
+int[] yList = new int[900/20];
 
 Player player1 = new Player();
 Enemy enemy1;
@@ -67,11 +67,11 @@ Goal goal1;
 
 
 void setup(){
-  size(1080,720); 
+  size(1600,900); 
   
-  speedX = 8;
+  speedX = 6;
   speedY = 0;
-  gravity = 0.5;
+  gravity = 1.5;
   
   rectMode(CENTER);
   textAlign(CENTER,CENTER);
@@ -181,7 +181,7 @@ void draw(){
     explosions[i].display(); 
   }
 
-  playerAcc = playerAcc + 0.4;
+  // PLAYERS VERTICAL COLLISION
   for(int i = 0; i < objs.length; i++){
     if(playerX+player1.w/2 > objs[i].left && playerX-player1.w/2 < objs[i].right && 
     playerY+player1.h/2 + speedY > objs[i].top && playerY+player1.h/2 <= objs[i].bottom){
@@ -196,6 +196,25 @@ void draw(){
     playerY = objs[sIndex].top - player1.h/2; 
     grounded = true;
     dblJumpAvail = true;
+    //playerAcc = 0;
+    sLoopFail = -1;
+  }
+
+  for(int i = 0; i < objs.length; i++){
+    if(playerX+player1.w/2 > objs[i].left && playerX-player1.w/2 < objs[i].right && 
+    playerY+player1.h/2 > objs[i].top && playerY-player1.h/2 + speedY <= objs[i].bottom){
+      sIndex = i;
+      sLoopFail = sIndex;
+    }
+  }
+  if(sLoopFail == -1){
+    //playerY += speedY; 
+    //speedY += gravity;
+  }else{
+    playerY = objs[sIndex].bottom + player1.h/2; 
+    speedY *= -0.8;
+    //grounded = true;
+    //dblJumpAvail = true;
     //playerAcc = 0;
     sLoopFail = -1;
   }
@@ -215,7 +234,8 @@ void draw(){
     quad(savedX,savedY,mouseX,savedY,mouseX,mouseY,savedX,mouseY);
     rectMode(CENTER);
   }  
-  
+
+  /*
   if(wDown || !grounded){
     for(int i = 0; i < objs.length; i++){
       if(playerY-player1.h/2 + speedY < objs[i].bottom && playerY-player1.h/2 >= objs[i].bottom && 
@@ -231,6 +251,7 @@ void draw(){
       wLoopFail = -1;
     }
   }
+  */
   
   if(aDown){
     for(int i = 0; i < objs.length; i++){
@@ -248,6 +269,7 @@ void draw(){
     }
   }
   
+  /*
   if(sDown && !grounded){
     for(int i = 0; i < objs.length; i++){
       if(playerX+player1.w/2 > objs[i].left && playerX-player1.w/2 < objs[i].right && 
@@ -263,6 +285,7 @@ void draw(){
       sLoopFail = -1;
     }
   }
+  */
   
   if(dDown){
     //Loop through all objects in objs
@@ -303,9 +326,8 @@ void draw(){
   }
   
   if(jump){
-    println("JUMP");
     playerY = playerY - 5;
-    speedY = -10; 
+    speedY = -20; 
     jump = false;
   }
     
@@ -330,6 +352,7 @@ void keyPressed(){
   if(key=='s'||key=='S')sDown=true; 
   if(key=='d'||key=='D')dDown=true; 
   if(key==' ')spaceDown=true;
+  
   
 }
 
