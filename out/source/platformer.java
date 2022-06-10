@@ -128,7 +128,7 @@ Goal goal1;
 }
 
  public void draw(){
-  background(100);
+  background(50);
   
   stroke(80);
   strokeWeight(1);

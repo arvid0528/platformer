@@ -111,7 +111,7 @@ void setup(){
 }
 
 void draw(){
-  background(100);
+  background(50);
   
   stroke(80);
   strokeWeight(1);
