@@ -27,5 +27,11 @@ class Player{
     rect(playerX,playerY,w,h);
      
   }
+
+  void displayRoll(){
+    stroke(0);
+    fill(0,200,200);
+    rect(playerX,playerY,w,w);
+  }
   
 }

@@ -1,5 +1,6 @@
 boolean wDown,aDown,sDown,dDown;
 boolean spaceDown;
+boolean shiftDown;
 float playerX,playerY;
 float playerAcc;
 float speedY;
@@ -28,6 +29,11 @@ boolean grounded = false;
 boolean jump;
 boolean dblJumpAvail = true;
 float spaceClickedTimer;
+float rollTimer = 0;
+String playerAnimation;
+float rollCooldown; 
+
+PImage standImg; 
 
 int[] xList = new int[1600/20];
 int[] yList = new int[900/20];
@@ -80,7 +86,9 @@ void setup(){
   playerY = height/2;
   
   mode = "play";
-  //mode = "build";
+  playerAnimation = "stand";
+
+  standImg = loadImage("stand.png");
 
   for(int i = 0; i < width/20; i++){
     xList[i] = i*20;
@@ -219,8 +227,14 @@ void draw(){
     sLoopFail = -1;
   }
 
-  player1.display();
-  
+  if(playerAnimation == "stand"){
+    player1.display();
+    image(standImg, playerX-player1.w/2, playerY-player1.h/2);
+  } 
+  else if(playerAnimation == "roll"){
+    player1.displayRoll();
+  }
+
   if(death){
     textSize(50);
     fill(255);
@@ -331,6 +345,22 @@ void draw(){
     jump = false;
   }
     
+  if(shiftDown && rollCooldown == 0){
+    // roll dodge
+    rollTimer = 15;
+  }
+
+  if(rollTimer > 0){
+    playerAnimation = "roll";
+    rollTimer -= 1;
+    rollCooldown = 30;
+  } else {
+    playerAnimation = "stand";
+  }
+
+  if(rollCooldown > 0){
+    rollCooldown -= 1;
+  }
     
   if(!grounded){
     //playerY += speedY; 
@@ -340,8 +370,9 @@ void draw(){
   textSize(30);
   text("grounded: " + grounded, width/2, height/2);
   text("jump: " + jump, width/2, height/2 + 50);
-  text("dblJumpAvail: " + dblJumpAvail, width/2, height/2 + 100);
-  text("spaceClickedTimer: " + spaceClickedTimer, width/2, height/2 + 150);
+  text("playerAnimation: " + playerAnimation, width/2, height/2 + 100);
+  text("rollTimer: " + rollTimer, width/2, height/2 + 150);
+  text("rollCooldown: " + rollCooldown, width/2, height/2 + 200);
   
   spaceDown = false;
   
@@ -352,6 +383,7 @@ void keyPressed(){
   if(key=='s'||key=='S')sDown=true; 
   if(key=='d'||key=='D')dDown=true; 
   if(key==' ')spaceDown=true;
+  if(keyCode == SHIFT)shiftDown=true;
   
   
 }
@@ -362,6 +394,7 @@ void keyReleased(){
   if(key=='s'||key=='S')sDown=false;
   if(key=='d'||key=='D')dDown=false;  
   if(key==' ')spaceDown=false;
+  if(keyCode == SHIFT)shiftDown=false;
   if(key==ENTER){
     if(mode == "play"){
       mode = "build"; 
