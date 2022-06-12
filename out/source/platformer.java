@@ -57,6 +57,7 @@ int[] yList = new int[900/20];
 
 Player player1 = new Player();
 Enemy enemy1;
+EnemyWalking walker;
 
 Explosion[] explosions = new Explosion[0];
 
@@ -76,7 +77,7 @@ InvisObject[] invisObjs = new InvisObject[0];
 
  public void createInvisObject(float x, float y, float w, float h){
   InvisObject tempInvisObj = new InvisObject(x, y, w, h);
-  invisObjs = (InvisObject[]) append(invisObj, tempInvisObj);
+  invisObjs = (InvisObject[]) append(invisObjs, tempInvisObj);
 }
 
 Popup[] popups = new Popup[0];
@@ -131,6 +132,7 @@ Goal goal1;
   
   enemy1 = new Enemy(850,height-200,50,50);
   goal1 = new Goal(width-100,100);
+  walker = new EnemyWalking(950, height - 300, 30, 70);
   
   createObject(200,height/2-150,50,height-150);
   createObject(400,height/2+150,50,height-150);
@@ -166,6 +168,11 @@ Goal goal1;
     enemy1.playerDetection();
     enemy1.display();
   }
+
+  walker.pacing();
+  walker.playerCollide();
+  walker.collissionDetection();
+  walker.display();
   
   goal1.goalCheck();
   goal1.display();
@@ -175,8 +182,6 @@ Goal goal1;
     level++;
   } 
 
-
-  
   textSize(30);
   fill(255);
   text("Mode: " + mode,width/2,50);
@@ -203,6 +208,10 @@ Goal goal1;
   
   for(int i = 0; i < objs.length; i++){
     objs[i].display();
+  }
+
+  for(int i = 0; i < invisObjs.length; i++){
+    invisObjs[i].display();
   }
   
   for(int i = 0; i < popups.length; i++){
@@ -720,14 +729,33 @@ class EnemyWalking{
     
     health = 100;
     speedX = 3;
-
+    velX = 5;
 
   }
   
   //Normal pace when not chasing
    public void pacing(){
     
-    x += speedX;
+    x += velX;
+
+    if(velX > 0){
+      for(int i = 0; i < invisObjs.length; i++){
+        if(x+w/2 + velX > invisObjs[i].left && x <= invisObjs[i].left && y-h/2 < invisObjs[i].bottom && y+h/2 > invisObjs[i].top){
+          x = invisObjs[i].left - w/2;
+          velX *= -1;
+
+        }
+      }
+    }
+    if(velX < 0){
+      for(int i = 0; i < invisObjs.length; i++){
+        if(x-w/2 + velX < invisObjs[i].right && x >= invisObjs[i].right && y-h/2 < invisObjs[i].bottom && y+h/2 > invisObjs[i].top){
+          x = invisObjs[i].right + w/2;
+          velX *= -1;
+        }
+      }
+    }
+
     
   }
   
@@ -751,7 +779,7 @@ class EnemyWalking{
       for(int i = 0; i < objs.length; i++){
         if(x+w/2 + velX > objs[i].left && x <= objs[i].left && y-h/2 < objs[i].bottom && y+h/2 > objs[i].top){
           x = objs[i].left - w/2;
-          velX *= -0.75f;
+          velX *= -1;
 
         }
       }
@@ -760,7 +788,7 @@ class EnemyWalking{
       for(int i = 0; i < objs.length; i++){
         if(x-w/2 + velX < objs[i].right && x >= objs[i].right && y-h/2 < objs[i].bottom && y+h/2 > objs[i].top){
           x = objs[i].right + w/2;
-          velX *= -0.75f;
+          velX *= -1;
         }
       }
     }
@@ -869,7 +897,7 @@ class EnemyWalking{
       fill(200,100,0);
     }
     stroke(0);
-    ellipse(x,y,w,h);
+    rect(x,y,w,h);
     
     noFill();
     rect(x,y-h/2-10,w,5);
@@ -958,41 +986,81 @@ class Goal{
   
   
 }
-class Player{
+class InvisObject{
   
-  float d = 60;
-  float w = 20;
-  float h = 50;
-  float damage = 10;
+  float x,y,w,h,cornerX,cornerY,newX,newY;
+  float left;
+  float right;
+  float top;
+  float bottom;
+  float tempWidth;
+  float tempHeight;
+  
+  InvisObject(float obj_x,float obj_y,float obj_w,float obj_h){
+    
+    x = obj_x;
+    y = obj_y;
+    w = obj_w;
+    h = obj_h;
+    
+    cornerX = obj_x - w/2;
+    cornerY = obj_y - h/2;
+    
+    left = cornerX;
+    right = cornerX + w;
+    top = cornerY;
+    bottom = cornerY + h;
+    
+    float rest = left % 20;              
+ 
+    if(rest >= 10){
+      left += 20 - rest;
+    }
+    else if(rest > 0){
+      left -= rest;
+    }
+    
+    rest = right % 20;
+    if(rest >= 10){
+      right += 20 - rest;
+    }
+    else if(rest > 0){
+      right -= rest;
+    }
+    
+    rest = top % 20;
+    if(rest >= 10){
+      top += 20 - rest;
+    }
+    else if(rest > 0){
+      top -= rest;
+    }
+   
+    rest = bottom % 20;
+    if(rest >= 10){
+      bottom += 20 - rest;
+    }
+    else if(rest > 0){
+      bottom -= rest;
+    }
+          
+    w = right - left;
+    h = bottom - top;
+    
+    if(w < 20)w = 20;
+    if(h < 20)h = 20;
+    
+  }
   
    public void display(){
     
-    rectMode(CENTER);
-    
-    pushMatrix();
-    translate(playerX,playerY);
-    angle = atan2(mouseY-playerY,mouseX-playerX);
-    popMatrix(); 
-  
-    pushMatrix();
-    translate(playerX,playerY);  
-    rotate(angle);
-    fill(50);
-    stroke(0);
-    rect(20,0,50,5);
-    popMatrix(); 
-    
-    stroke(0);
-    fill(0,200,255);
-    rect(playerX,playerY,w,h);
-     
-  }
+    fill(0,0,0,0);
+    stroke(255,0,0);
+    rectMode(CORNER);
+    rect(left,top,w,h);   
 
-   public void displayRoll(){
-    stroke(0);
-    fill(0,200,200);
-    rect(playerX,playerY,w,w);
   }
+  
   
 }
 class Object{
@@ -1072,14 +1140,42 @@ class Object{
 
   }
   
+}
+class Player{
   
+  float d = 60;
+  float w = 20;
+  float h = 50;
+  float damage = 10;
   
+   public void display(){
+    
+    rectMode(CENTER);
+    
+    pushMatrix();
+    translate(playerX,playerY);
+    angle = atan2(mouseY-playerY,mouseX-playerX);
+    popMatrix(); 
   
-  
-  
-  
-  
-  
+    pushMatrix();
+    translate(playerX,playerY);  
+    rotate(angle);
+    fill(50);
+    stroke(0);
+    rect(20,0,50,5);
+    popMatrix(); 
+    
+    stroke(0);
+    fill(0,200,255);
+    rect(playerX,playerY,w,h);
+     
+  }
+
+   public void displayRoll(){
+    stroke(0);
+    fill(0,200,200);
+    rect(playerX,playerY,w,w);
+  }
   
 }
 class Popup{

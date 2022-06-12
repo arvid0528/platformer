@@ -20,14 +20,33 @@ class EnemyWalking{
     
     health = 100;
     speedX = 3;
-
+    velX = 5;
 
   }
   
   //Normal pace when not chasing
   void pacing(){
     
-    x += speedX;
+    x += velX;
+
+    if(velX > 0){
+      for(int i = 0; i < invisObjs.length; i++){
+        if(x+w/2 + velX > invisObjs[i].left && x <= invisObjs[i].left && y-h/2 < invisObjs[i].bottom && y+h/2 > invisObjs[i].top){
+          x = invisObjs[i].left - w/2;
+          velX *= -1;
+
+        }
+      }
+    }
+    if(velX < 0){
+      for(int i = 0; i < invisObjs.length; i++){
+        if(x-w/2 + velX < invisObjs[i].right && x >= invisObjs[i].right && y-h/2 < invisObjs[i].bottom && y+h/2 > invisObjs[i].top){
+          x = invisObjs[i].right + w/2;
+          velX *= -1;
+        }
+      }
+    }
+
     
   }
   
@@ -51,7 +70,7 @@ class EnemyWalking{
       for(int i = 0; i < objs.length; i++){
         if(x+w/2 + velX > objs[i].left && x <= objs[i].left && y-h/2 < objs[i].bottom && y+h/2 > objs[i].top){
           x = objs[i].left - w/2;
-          velX *= -0.75;
+          velX *= -1;
 
         }
       }
@@ -60,7 +79,7 @@ class EnemyWalking{
       for(int i = 0; i < objs.length; i++){
         if(x-w/2 + velX < objs[i].right && x >= objs[i].right && y-h/2 < objs[i].bottom && y+h/2 > objs[i].top){
           x = objs[i].right + w/2;
-          velX *= -0.75;
+          velX *= -1;
         }
       }
     }
@@ -169,7 +188,7 @@ class EnemyWalking{
       fill(200,100,0);
     }
     stroke(0);
-    ellipse(x,y,w,h);
+    rect(x,y,w,h);
     
     noFill();
     rect(x,y-h/2-10,w,5);

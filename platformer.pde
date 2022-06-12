@@ -40,6 +40,7 @@ int[] yList = new int[900/20];
 
 Player player1 = new Player();
 Enemy enemy1;
+EnemyWalking walker;
 
 Explosion[] explosions = new Explosion[0];
 
@@ -59,7 +60,7 @@ InvisObject[] invisObjs = new InvisObject[0];
 
 void createInvisObject(float x, float y, float w, float h){
   InvisObject tempInvisObj = new InvisObject(x, y, w, h);
-  invisObjs = (InvisObject[]) append(invisObj, tempInvisObj);
+  invisObjs = (InvisObject[]) append(invisObjs, tempInvisObj);
 }
 
 Popup[] popups = new Popup[0];
@@ -114,6 +115,7 @@ void setup(){
   
   enemy1 = new Enemy(850,height-200,50,50);
   goal1 = new Goal(width-100,100);
+  walker = new EnemyWalking(950, height - 300, 30, 70);
   
   createObject(200,height/2-150,50,height-150);
   createObject(400,height/2+150,50,height-150);
@@ -149,6 +151,11 @@ void draw(){
     enemy1.playerDetection();
     enemy1.display();
   }
+
+  walker.pacing();
+  walker.playerCollide();
+  walker.collissionDetection();
+  walker.display();
   
   goal1.goalCheck();
   goal1.display();
@@ -158,8 +165,6 @@ void draw(){
     level++;
   } 
 
-
-  
   textSize(30);
   fill(255);
   text("Mode: " + mode,width/2,50);
@@ -186,6 +191,10 @@ void draw(){
   
   for(int i = 0; i < objs.length; i++){
     objs[i].display();
+  }
+
+  for(int i = 0; i < invisObjs.length; i++){
+    invisObjs[i].display();
   }
   
   for(int i = 0; i < popups.length; i++){
