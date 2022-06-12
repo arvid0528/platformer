@@ -55,6 +55,13 @@ void createObject(float x,float y,float w,float h){
   objs = (Object[]) append(objs,tempObj);
 }
 
+InvisObject[] invisObjs = new InvisObject[0];
+
+void createInvisObject(float x, float y, float w, float h){
+  InvisObject tempInvisObj = new InvisObject(x, y, w, h);
+  invisObjs = (InvisObject[]) append(invisObj, tempInvisObj);
+}
+
 Popup[] popups = new Popup[0];
 
 void createPopup(String text, float x, float y, float time, int size){
@@ -418,7 +425,11 @@ void mouseReleased(){
     float tempWidth = abs(mouseX - savedX);
     float tempHeight = abs(mouseY - savedY);
     if(tempWidth > 10 && tempHeight > 10){
-      createObject(posX,posY,tempWidth,tempHeight);
+      if(mouseButton == LEFT){
+        createObject(posX,posY,tempWidth,tempHeight);
+      }else if(mouseButton == RIGHT){
+        createInvisObject(posX, posY, tempWidth, tempHeight);
+      }
     }else{
       createPopup("Too small",posX,posY,1,20);
     }

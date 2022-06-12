@@ -68,8 +68,6 @@ class Object{
   
   void display(){
     
-    
-    
     fill(0,0,0,0);
     stroke(255);
     rectMode(CORNER);
