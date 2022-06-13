@@ -38,8 +38,8 @@ PImage cobbleTexture;
 PImage grassTextureTop;
 PImage dirtTexture;
 
-int[] xList = new int[1600/20];
-int[] yList = new int[900/20];
+int[] xList = new int[1440/20];
+int[] yList = new int[810/20];
 
 Player player1 = new Player();
 Enemy enemy1;
@@ -84,7 +84,7 @@ Goal goal1;
 
 
 void setup(){
-  size(1600,900); 
+  size(1440,810); 
   
   speedX = 6;
   speedY = 0;
