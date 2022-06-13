@@ -34,6 +34,9 @@ String playerAnimation;
 float rollCooldown; 
 
 PImage standImg; 
+PImage cobbleTexture;
+PImage grassTextureTop;
+PImage dirtTexture;
 
 int[] xList = new int[1600/20];
 int[] yList = new int[900/20];
@@ -97,6 +100,9 @@ void setup(){
   playerAnimation = "stand";
 
   standImg = loadImage("stand.png");
+  cobbleTexture = loadImage("cobbleTexture.png");
+  grassTextureTop = loadImage("grassTextureTop.png");
+  dirtTexture = loadImage("dirtTexture.png");
 
   for(int i = 0; i < width/20; i++){
     xList[i] = i*20;
@@ -113,14 +119,18 @@ void setup(){
   
   //Level 1
   
-  enemy1 = new Enemy(850,height-200,50,50);
+  enemy1 = new Enemy(850,height-230,50,60);
   goal1 = new Goal(width-100,100);
-  walker = new EnemyWalking(950, height - 300, 30, 70);
+  walker = new EnemyWalking(1000, height - 335, 30, 70);
   
-  createObject(200,height/2-150,50,height-150);
-  createObject(400,height/2+150,50,height-150);
-  createObject(600,height/2-150,50,height-150);
+  //createObject(200,height/2-150,50,height-150);
+  //createObject(400,height/2+150,50,height-150);
+  //createObject(600,height/2-150,50,height-150);
   
+  createObject(1000, height-280, 500, 40);
+  createInvisObject(750, height-320, 20, 20);
+  createInvisObject(1270, height-320, 20, 20);
+
   playerX = 100;
   playerY = 100;
     
@@ -128,10 +138,11 @@ void setup(){
 }
 
 void draw(){
-  background(50);
+  background(150,230,230);
   
   stroke(80);
   strokeWeight(1);
+  
   for(int x = 0; x < width/20; x++){
     line(x*20,0,x*20,height);
   }
@@ -139,6 +150,8 @@ void draw(){
     line(0,y*20,width,y*20);
   }
   
+
+  /*
   if(enemy1.health > 0){
     enemy1.collissionDetection();
     enemy1.playerCollide();
@@ -151,6 +164,7 @@ void draw(){
     enemy1.playerDetection();
     enemy1.display();
   }
+  */
 
   walker.pacing();
   walker.playerCollide();
@@ -245,7 +259,7 @@ void draw(){
 
   if(playerAnimation == "stand"){
     player1.display();
-    image(standImg, playerX-player1.w/2, playerY-player1.h/2);
+    //image(standImg, playerX-player1.w/2, playerY-player1.h/2);
   } 
   else if(playerAnimation == "roll"){
     player1.displayRoll();
@@ -383,13 +397,15 @@ void draw(){
     //speedY += gravity;
   }
   
+  /*
   textSize(30);
   text("grounded: " + grounded, width/2, height/2);
   text("jump: " + jump, width/2, height/2 + 50);
   text("playerAnimation: " + playerAnimation, width/2, height/2 + 100);
   text("rollTimer: " + rollTimer, width/2, height/2 + 150);
   text("rollCooldown: " + rollCooldown, width/2, height/2 + 200);
-  
+  */
+
   spaceDown = false;
   
 }

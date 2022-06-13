@@ -73,6 +73,18 @@ class Object{
     rectMode(CORNER);
     rect(left,top,w,h);   
 
+    float widthAmount = w/20;
+    float heightAmount = h/20;
+    
+    for(int i = 0; i < widthAmount; i++){
+      image(grassTextureTop, left + i*20, top);
+      image(dirtTexture, left + i*20, top+20);
+      for(int j = 0; j < heightAmount-2; j++){
+        image(cobbleTexture, left + i*20, top + (j+2)*20);
+      }
+    }
+    
+
   }
   
 }

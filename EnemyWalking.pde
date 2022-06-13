@@ -20,7 +20,7 @@ class EnemyWalking{
     
     health = 100;
     speedX = 3;
-    velX = 5;
+    velX = 3;
 
   }
   
@@ -198,6 +198,7 @@ class EnemyWalking{
       rectMode(CORNER);
       fill(255,0,0);
       rect(x-w/2,y-h/2-12.5,healthbar,5);
+      }
     }
     
   }
@@ -207,4 +208,4 @@ class EnemyWalking{
   
   
   
-}
+
