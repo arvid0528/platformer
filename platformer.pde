@@ -38,8 +38,10 @@ PImage cobbleTexture;
 PImage grassTextureTop;
 PImage dirtTexture;
 
-int[] xList = new int[1440/20];
-int[] yList = new int[810/20];
+int pixelSize = 30;
+
+int[] xList = new int[1440/pixelSize];
+int[] yList = new int[810/pixelSize];
 
 Player player1 = new Player();
 Enemy enemy1;
@@ -99,22 +101,26 @@ void setup(){
   mode = "play";
   playerAnimation = "stand";
 
-  standImg = loadImage("stand.png");
+  standImg = loadImage("dude.png");
   cobbleTexture = loadImage("cobbleTexture.png");
   grassTextureTop = loadImage("grassTextureTop.png");
   dirtTexture = loadImage("dirtTexture.png");
 
-  for(int i = 0; i < width/20; i++){
-    xList[i] = i*20;
+  standImg.resize(pixelSize*2, pixelSize*2);
+  grassTextureTop.resize(30, 30);
+
+
+  for(int i = 0; i < width/pixelSize; i++){
+    xList[i] = i*pixelSize;
   }
-  for(int i = 0; i < height/20; i++){
-    yList[i] = i*20;
+  for(int i = 0; i < height/pixelSize; i++){
+    yList[i] = i*pixelSize;
   }
   
-  createObject(0,height/2,20,height);
-  createObject(width-20,height/2,20,height);
-  createObject(width/2,0,width,20);
-  createObject(width/2,height-20,width,20);
+  createObject(0,height/2,pixelSize,height);
+  createObject(width-pixelSize,height/2,pixelSize,height);
+  createObject(width/2,0,width,pixelSize);
+  createObject(width/2,height-pixelSize,width,pixelSize);
   
   
   //Level 1
@@ -143,11 +149,11 @@ void draw(){
   stroke(80);
   strokeWeight(1);
   
-  for(int x = 0; x < width/20; x++){
-    line(x*20,0,x*20,height);
+  for(int x = 0; x < width/pixelSize; x++){
+    line(x*pixelSize,0,x*pixelSize,height);
   }
-  for(int y = 0; y < height/20; y++){
-    line(0,y*20,width,y*20);
+  for(int y = 0; y < height/pixelSize; y++){
+    line(0,y*pixelSize,width,y*pixelSize);
   }
   
 
@@ -259,7 +265,7 @@ void draw(){
 
   if(playerAnimation == "stand"){
     player1.display();
-    //image(standImg, playerX-player1.w/2, playerY-player1.h/2);
+    image(standImg, playerX-player1.w/2, playerY-player1.h/2);
   } 
   else if(playerAnimation == "roll"){
     player1.displayRoll();
@@ -307,6 +313,7 @@ void draw(){
     }
     if(aLoopFail == -1){
       playerX -= speedX; 
+      player1.facingRight = false;
     }else{
       playerX = objs[aIndex].right + player1.w/2;
       aLoopFail = -1;
@@ -346,6 +353,7 @@ void draw(){
     //no collission was found, carry on as usual
     if(dLoopFail == -1){
       playerX += speedX; 
+      player1.facingRight = true;
     }else{
       //collission: x stops at saved object index
       playerX = objs[dIndex].left - player1.w/2;
@@ -441,7 +449,10 @@ void mousePressed(){
     savedY = mouseY;
     drawLine = true;
   }
-  if(mode == "play")createBullet();
+  if(mode == "play"){
+    //createBullet();
+    
+  }
 }
 void mouseReleased(){
   if(mode == "build"){

@@ -23,34 +23,34 @@ class Object{
     top = cornerY;
     bottom = cornerY + h;
     
-    float rest = left % 20;              
+    float rest = left % pixelSize;              
  
-    if(rest >= 10){
-      left += 20 - rest;
+    if(rest >= pixelSize/2){
+      left += pixelSize - rest;
     }
     else if(rest > 0){
       left -= rest;
     }
     
-    rest = right % 20;
-    if(rest >= 10){
-      right += 20 - rest;
+    rest = right % pixelSize;
+    if(rest >= pixelSize/2){
+      right += pixelSize - rest;
     }
     else if(rest > 0){
       right -= rest;
     }
     
-    rest = top % 20;
-    if(rest >= 10){
-      top += 20 - rest;
+    rest = top % pixelSize;
+    if(rest >= pixelSize/2){
+      top += pixelSize - rest;
     }
     else if(rest > 0){
       top -= rest;
     }
    
-    rest = bottom % 20;
-    if(rest >= 10){
-      bottom += 20 - rest;
+    rest = bottom % pixelSize;
+    if(rest >= pixelSize/2){
+      bottom += pixelSize - rest;
     }
     else if(rest > 0){
       bottom -= rest;
@@ -59,8 +59,8 @@ class Object{
     w = right - left;
     h = bottom - top;
     
-    if(w < 20)w = 20;
-    if(h < 20)h = 20;
+    if(w < pixelSize)w = pixelSize;
+    if(h < pixelSize)h = pixelSize;
     
     
     
@@ -73,14 +73,14 @@ class Object{
     rectMode(CORNER);
     rect(left,top,w,h);   
 
-    float widthAmount = w/20;
-    float heightAmount = h/20;
+    float widthAmount = w/pixelSize;
+    float heightAmount = h/pixelSize;
     
     for(int i = 0; i < widthAmount; i++){
-      image(grassTextureTop, left + i*20, top);
-      image(dirtTexture, left + i*20, top+20);
+      image(grassTextureTop, left + i*pixelSize, top);
+      image(dirtTexture, left + i*pixelSize, top+pixelSize);
       for(int j = 0; j < heightAmount-2; j++){
-        image(cobbleTexture, left + i*20, top + (j+2)*20);
+        image(cobbleTexture, left + i*pixelSize, top + (j+2)*pixelSize);
       }
     }
     
