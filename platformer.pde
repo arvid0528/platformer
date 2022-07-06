@@ -37,8 +37,19 @@ PImage standImg;
 PImage cobbleTexture;
 PImage grassTextureTop;
 PImage dirtTexture;
+PImage zweihander;
+PImage blobRight;
+PImage blobLeft;
+PImage blobRightAttack;
+PImage blobRightAttackNoFire;
+PImage blobLeftAttack;
+PImage fire0;
+PImage fire1;
+PImage fire2;
 
-int pixelSize = 30;
+PImage[] imageList = new PImage[3];
+
+int pixelSize = 32;
 
 int[] xList = new int[1440/pixelSize];
 int[] yList = new int[810/pixelSize];
@@ -82,6 +93,13 @@ void createBullet(){
   bullets = (Bullet[]) append(bullets,tempBullet);
 }
 
+FireAnimation[] fireAnimations = new FireAnimation[0];
+
+void createFireAnimation(float x, float y){
+  FireAnimation tempFire = new FireAnimation(x, y);
+  fireAnimations = (FireAnimation[]) append(fireAnimations, tempFire);
+}
+
 Goal goal1;
 
 
@@ -105,6 +123,19 @@ void setup(){
   cobbleTexture = loadImage("cobbleTexture.png");
   grassTextureTop = loadImage("grassTextureTop.png");
   dirtTexture = loadImage("dirtTexture.png");
+  zweihander = loadImage("zweihander.png");
+  blobRight = loadImage("blobRight.png");
+  blobLeft = loadImage("blobLeft.png");
+  blobRightAttack = loadImage("blobRightAttack.png");
+  blobRightAttackNoFire = loadImage("blobRightAttackNoFire.png");
+  blobLeftAttack = loadImage("blobLeftAttack.png");
+  fire0 = loadImage("fire0.png");
+  fire1 = loadImage("fire1.png");
+  fire2 = loadImage("fire2.png");
+
+  imageList[0] = fire0;
+  imageList[1] = fire1;
+  imageList[2] = fire2;
 
   standImg.resize(pixelSize*2, pixelSize*2);
   grassTextureTop.resize(30, 30);
@@ -140,11 +171,10 @@ void setup(){
   playerX = 100;
   playerY = 100;
     
-    
 }
 
 void draw(){
-  background(150,230,230);
+  background(120,170,180,50);
   
   stroke(80);
   strokeWeight(1);
@@ -224,6 +254,9 @@ void draw(){
   for(int i = 0; i < explosions.length; i++){
     explosions[i].display(); 
   }
+  for(int i = 0; i < fireAnimations.length; i++){
+    fireAnimations[i].display();
+  }
 
   // PLAYERS VERTICAL COLLISION
   for(int i = 0; i < objs.length; i++){
@@ -265,7 +298,7 @@ void draw(){
 
   if(playerAnimation == "stand"){
     player1.display();
-    image(standImg, playerX-player1.w/2, playerY-player1.h/2);
+    //image(standImg, playerX-player1.w/2, playerY-player1.h/2);
   } 
   else if(playerAnimation == "roll"){
     player1.displayRoll();
@@ -372,6 +405,7 @@ void draw(){
     jump = true;
     spaceClickedTimer = 5;
   }
+  
   else if(spaceDown && !grounded && dblJumpAvail && spaceClickedTimer == 0){
     jump = true;
     dblJumpAvail = false;
@@ -399,12 +433,26 @@ void draw(){
   if(rollCooldown > 0){
     rollCooldown -= 1;
   }
-    
+  
   if(!grounded){
     //playerY += speedY; 
     //speedY += gravity;
   }
   
+  if(player1.attackDuration > 0){
+    noFill();
+    stroke(255,0,0);
+    //rect(playerX + pixelSize, playerY, pixelSize, pixelSize);
+    rectMode(CENTER);
+    player1.attackDuration -= 1;
+  }
+
+
+  if(player1.attackCooldown > 0){
+    player1.attackCooldown -= 1;
+  }
+
+
   /*
   textSize(30);
   text("grounded: " + grounded, width/2, height/2);
@@ -424,7 +472,9 @@ void keyPressed(){
   if(key=='d'||key=='D')dDown=true; 
   if(key==' ')spaceDown=true;
   if(keyCode == SHIFT)shiftDown=true;
-  
+  if(keyCode == UP && player1.attackCooldown == 0){
+    player1.attack();
+  }
   
 }
 
